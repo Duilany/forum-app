@@ -1,47 +1,55 @@
-import authReducer, { login, logout } from "../../features/auth/authSlice";
+/**
+ * Skenario Pengujian: authSlice Reducer
+ * 1. Mengembalikan state awal dengan user dan token null.
+ * 2. Saat login.pending dipanggil → status berubah menjadi "loading" dan error direset.
+ * 3. Saat login.fulfilled → status menjadi "succeeded", user dan token terisi.
+ * 4. Saat logout.fulfilled → user dan token dikosongkan, status kembali "idle".
+ * Tujuan: Memastikan reducer authSlice berperilaku sesuai state transisi login/logout.
+ */
+import authReducer, { login, logout } from '../../features/auth/authSlice';
 
-describe("authSlice reducer", () => {
+describe('authSlice reducer', () => {
   const initialState = {
     user: null,
     token: null,
-    status: "idle",
+    status: 'idle',
     error: null,
   };
 
-  it("should return the initial state", () => {
-    expect(authReducer(undefined, { type: "@@INIT" })).toEqual(initialState);
+  it('should return the initial state', () => {
+    expect(authReducer(undefined, { type: '@@INIT' })).toEqual(initialState);
   });
 
-  it("should handle login.pending", () => {
+  it('should handle login.pending', () => {
     const action = { type: login.pending.type };
     const result = authReducer(initialState, action);
-    expect(result.status).toBe("loading");
+    expect(result.status).toBe('loading');
     expect(result.error).toBeNull();
   });
 
-  it("should handle login.fulfilled", () => {
+  it('should handle login.fulfilled', () => {
     const payload = {
-      token: "token123",
-      user: { id: "u1", name: "Samuel" },
+      token: 'token123',
+      user: { id: 'u1', name: 'Samuel' },
     };
     const action = { type: login.fulfilled.type, payload };
     const result = authReducer(initialState, action);
-    expect(result.status).toBe("succeeded");
+    expect(result.status).toBe('succeeded');
     expect(result.user).toEqual(payload.user);
-    expect(result.token).toBe("token123");
+    expect(result.token).toBe('token123');
   });
 
-  it("should handle logout.fulfilled", () => {
+  it('should handle logout.fulfilled', () => {
     const stateBefore = {
-      user: { id: "u1" },
-      token: "token123",
-      status: "succeeded",
+      user: { id: 'u1' },
+      token: 'token123',
+      status: 'succeeded',
       error: null,
     };
     const action = { type: logout.fulfilled.type };
     const result = authReducer(stateBefore, action);
     expect(result.user).toBeNull();
     expect(result.token).toBeNull();
-    expect(result.status).toBe("idle");
+    expect(result.status).toBe('idle');
   });
 });

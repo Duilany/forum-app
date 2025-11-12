@@ -1,3 +1,9 @@
+/**
+ * Skenario Pengujian: ThreadList Component
+ * 1. Jika props `threads` kosong, maka teks "Belum ada thread" harus ditampilkan.
+ * 2. Jika terdapat data thread, maka setiap item harus dirender menggunakan komponen ThreadItem.
+ * 3. ThreadItem dimock agar pengujian hanya fokus pada perilaku ThreadList.
+ */
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ThreadList from "../../components/ThreadList";

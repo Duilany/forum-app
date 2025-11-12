@@ -1,3 +1,11 @@
+/**
+ * Skenario Pengujian: LoginForm Component
+ * 1. Komponen harus menampilkan input untuk email, password, dan tombol "Login".
+ * 2. Ketika pengguna mengetikkan email dan password, nilai input harus berubah sesuai.
+ * 3. Saat form disubmit, fungsi dispatch login harus dipanggil.
+ * 4. Dispatch mock digunakan untuk memverifikasi pemanggilan aksi login.
+ * 5. Navigasi dan state redux dimock agar pengujian tidak bergantung pada implementasi asli.
+ */
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";

@@ -1,3 +1,10 @@
+/**
+ * Skenario Pengujian: ThreadItem Component
+ * 1. Komponen harus menampilkan judul thread, kategori, jumlah komentar, dan nama pemilik.
+ * 2. Saat tombol upvote diklik, dispatch harus dipanggil untuk mengirim aksi vote.
+ * 3. Redux state dan dispatch dimock untuk menghindari ketergantungan pada store asli.
+ * 4. Pastikan data thread ditampilkan dengan benar sesuai properti yang dikirim.
+ */
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
