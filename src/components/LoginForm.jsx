@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
@@ -71,12 +72,12 @@ export default function LoginForm() {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           Belum punya akun?{" "}
-          <a
-            href="/register"
+          <Link
+            to="/register"
             className="text-blue-600 font-medium hover:underline"
           >
             Daftar di sini
-          </a>
+          </Link>
         </p>
       </div>
     </div>

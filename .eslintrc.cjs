@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
+    jest: true, // ✅ Tambahkan agar ESLint tahu kamu pakai Jest
   },
   extends: ["airbnb", "plugin:react/recommended"],
   parserOptions: {
@@ -50,6 +51,25 @@ module.exports = {
     // ⚙️ Izinkan console.log (bisa kamu ubah ke "warn" kalau mau)
     "no-console": "off",
   },
+
+  // ✅ Tambahkan ini agar ESLint tahu setupTests.js boleh pakai devDependencies
+  overrides: [
+    {
+      files: [
+        "**/*.test.js",
+        "**/*.test.jsx",
+        "src/setupTests.js",
+        "src/tests/mocks/**",
+      ],
+      rules: {
+        "import/no-extraneous-dependencies": "off",
+        "react/display-name": "off",
+        "func-names": "off",
+        "max-len": "off",
+      },
+    },
+  ],
+
   settings: {
     react: {
       version: "detect",
