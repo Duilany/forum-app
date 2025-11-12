@@ -10,7 +10,8 @@
     "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "jest --watchAll",
-    "e2e": "cypress open"
+    "e2e": "cypress open",
+    "ci:test": "react-scripts test --watchAll=false --passWithNoTests"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.2",
