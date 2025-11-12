@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import * as api from './threadsApi';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import * as api from "./threadsApi";
 
 /* ==============================
    FETCH THREAD LIST
 ============================== */
 export const fetchThreads = createAsyncThunk(
-  'threads/fetchThreads',
+  "threads/fetchThreads",
   async (_, thunkAPI) => {
     try {
       const [threadsResp, usersResp] = await Promise.all([
@@ -25,17 +25,17 @@ export const fetchThreads = createAsyncThunk(
       return mergedThreads;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message,
+        err.response?.data?.message || err.message
       );
     }
-  },
+  }
 );
 
 /* ==============================
    FETCH THREAD DETAIL (fixed)
 ============================== */
 export const fetchThreadDetail = createAsyncThunk(
-  'threads/fetchThreadDetail',
+  "threads/fetchThreadDetail",
   async (id, thunkAPI) => {
     try {
       const [threadResp, usersResp] = await Promise.all([
@@ -43,30 +43,33 @@ export const fetchThreadDetail = createAsyncThunk(
         api.fetchUsersRequest?.(),
       ]);
 
-      const threadData = threadResp.data?.data?.detailThread
-        || threadResp.data?.data?.thread
-        || threadResp.data?.data
-        || threadResp.data;
+      const threadData =
+        threadResp.data?.data?.detailThread ||
+        threadResp.data?.data?.thread ||
+        threadResp.data?.data ||
+        threadResp.data;
 
       const users = usersResp?.data?.data?.users || [];
 
       // 🧩 Tambahkan owner pada thread utama (fix)
-      const owner = users.find((u) => u.id === threadData.ownerId)
-        || threadData.owner
-        || null;
+      const owner =
+        users.find((u) => u.id === threadData.ownerId) ||
+        threadData.owner ||
+        null;
 
       const enrichedThread = { ...threadData, owner };
 
       // 🧩 Tambahkan owner ke setiap komentar (fix agar tidak hilang saat refresh)
       enrichedThread.comments = (threadData.comments || []).map((comment) => {
-        const commentOwner = users.find((u) => u.id === comment.ownerId)
-          || (comment.owner ? comment.owner : null);
+        const commentOwner =
+          users.find((u) => u.id === comment.ownerId) ||
+          (comment.owner ? comment.owner : null);
 
         return {
           ...comment,
           owner: commentOwner || {
             id: comment.ownerId,
-            name: 'User Tidak Dikenal',
+            name: "User Tidak Dikenal",
             avatar: null,
           },
         };
@@ -75,58 +78,59 @@ export const fetchThreadDetail = createAsyncThunk(
       return enrichedThread;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message,
+        err.response?.data?.message || err.message
       );
     }
-  },
+  }
 );
 
 /* ==============================
    CREATE THREAD
 ============================== */
 export const createThread = createAsyncThunk(
-  'threads/createThread',
+  "threads/createThreadd",
   async (payload, thunkAPI) => {
     try {
       const resp = await api.createThreadRequest(payload);
       return resp.data?.data || resp.data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message,
+        err.response?.data?.message || err.message
       );
     }
-  },
+  }
 );
 
 /* ==============================
    ADD COMMENT
 ============================== */
 export const addComment = createAsyncThunk(
-  'threads/addComment',
+  "threads/addComment",
   async ({ threadId, content }, thunkAPI) => {
     try {
       const resp = await api.addCommentRequest(threadId, { content });
-      const commentData = resp.data?.data?.comment || resp.data?.data || resp.data;
+      const commentData =
+        resp.data?.data?.comment || resp.data?.data || resp.data;
 
       return { threadId, comment: commentData };
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message,
+        err.response?.data?.message || err.message
       );
     }
-  },
+  }
 );
 
 /* ==============================
    VOTE THREAD (langsung update)
 ============================== */
 export const voteThread = createAsyncThunk(
-  'threads/voteThread',
+  "threads/voteThread",
   async ({ threadId, type }, { dispatch, rejectWithValue }) => {
     try {
-      if (type === 'up') await api.upVoteThreadRequest(threadId);
-      if (type === 'down') await api.downVoteThreadRequest(threadId);
-      if (type === 'neutral') await api.neutralVoteThreadRequest(threadId);
+      if (type === "up") await api.upVoteThreadRequest(threadId);
+      if (type === "down") await api.downVoteThreadRequest(threadId);
+      if (type === "neutral") await api.neutralVoteThreadRequest(threadId);
 
       // ✅ panggil thunk resmi supaya data lengkap (dengan owner & comments)
       const result = await dispatch(fetchThreadDetail(threadId)).unwrap();
@@ -134,21 +138,21 @@ export const voteThread = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  },
+  }
 );
 
 /* ==============================
    VOTE COMMENT (langsung update)
 ============================== */
 export const voteComment = createAsyncThunk(
-  'threads/voteComment',
+  "threads/voteComment",
   async ({ threadId, commentId, type }, { dispatch, rejectWithValue }) => {
     try {
-      if (type === 'up') await api.upVoteCommentRequest(threadId, commentId);
-      if (type === 'down') {
+      if (type === "up") await api.upVoteCommentRequest(threadId, commentId);
+      if (type === "down") {
         await api.downVoteCommentRequest(threadId, commentId);
       }
-      if (type === 'neutral') {
+      if (type === "neutral") {
         await api.neutralVoteCommentRequest(threadId, commentId);
       }
 
@@ -157,14 +161,14 @@ export const voteComment = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || err.message);
     }
-  },
+  }
 );
 
 /* ==============================
    LEADERBOARD
 ============================== */
 export const fetchLeaderboard = createAsyncThunk(
-  'threads/fetchLeaderboard',
+  "threads/fetchLeaderboard",
   async (_, thunkAPI) => {
     try {
       const resp = await api.fetchLeaderboardRequest();
@@ -172,17 +176,17 @@ export const fetchLeaderboard = createAsyncThunk(
       return leaderboards;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message,
+        err.response?.data?.message || err.message
       );
     }
-  },
+  }
 );
 
 /* ==============================
    SLICE
 ============================== */
 const threadsSlice = createSlice({
-  name: 'threads',
+  name: "threads",
   initialState: {
     list: [],
     current: null,
@@ -194,8 +198,9 @@ const threadsSlice = createSlice({
     // ✅ Tambahkan reducer Optimistic Vote Thread
     optimisticVoteThread: (state, action) => {
       const { threadId, userId, type } = action.payload;
-      const thread = state.list.find((t) => t.id === threadId)
-        || (state.current && state.current.id === threadId ? state.current : null);
+      const thread =
+        state.list.find((t) => t.id === threadId) ||
+        (state.current && state.current.id === threadId ? state.current : null);
 
       if (!thread) return;
 
@@ -204,8 +209,8 @@ const threadsSlice = createSlice({
       thread.downVotesBy = thread.downVotesBy.filter((id) => id !== userId);
 
       // Tambahkan vote baru
-      if (type === 'up') thread.upVotesBy.push(userId);
-      else if (type === 'down') thread.downVotesBy.push(userId);
+      if (type === "up") thread.upVotesBy.push(userId);
+      else if (type === "down") thread.downVotesBy.push(userId);
     },
   },
   extraReducers: (builder) => {
@@ -251,7 +256,7 @@ const threadsSlice = createSlice({
           const newComment = {
             ...comment,
             createdAt: comment.createdAt || new Date().toISOString(),
-            content: comment.content || '',
+            content: comment.content || "",
           };
           s.current.comments = [...(s.current.comments || []), newComment];
         }
