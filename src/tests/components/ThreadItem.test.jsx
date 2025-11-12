@@ -37,9 +37,9 @@ describe("ThreadItem Component", () => {
       </Provider>
     );
 
-    expect(screen.getByText(/Judul Salah/i)).toBeInTheDocument();
+    expect(screen.getByText(/Judul Thread/i)).toBeInTheDocument();
     expect(screen.getByText(/#diskusi/i)).toBeInTheDocument();
-    expect(screen.getByText(/5/i)).toBeInTheDocument();
+    expect(screen.getByText(/3/i)).toBeInTheDocument();
   });
 
   it("calls vote handler when upvote clicked", () => {
