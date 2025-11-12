@@ -2,7 +2,7 @@ import axios from "axios";
 import { loadToken } from "../utils/authStorage";
 
 const API_BASE =
-  import.meta.env.MODE === "development"
+  process.env.NODE_ENV === "development"
     ? "/api"
     : "https://forum-api.dicoding.dev/v1";
 
