@@ -1,14 +1,16 @@
 // src/App.jsx
-import React from "react";
-import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import HomePage from "./pages/HomePage";
-import ThreadPage from "./pages/ThreadPage";
-import NewThreadPage from "./pages/NewThreadPage";
-import LeaderboardPage from "./pages/LeaderboardPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import { logout } from "./features/auth/authSlice";
+import React from 'react';
+import {
+  Routes, Route, NavLink, useNavigate,
+} from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import HomePage from './pages/HomePage';
+import ThreadPage from './pages/ThreadPage';
+import NewThreadPage from './pages/NewThreadPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import { logout } from './features/auth/authSlice';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -17,7 +19,7 @@ export default function App() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate("/login");
+    navigate('/login');
   };
 
   return (
@@ -31,9 +33,11 @@ export default function App() {
       <main className="flex-grow container mx-auto p-4 pb-20">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/threads/create" element={<NewThreadPage />} />{" "}
+          <Route path="/threads/create" element={<NewThreadPage />} />
+          {' '}
           {/* ✅ route buat thread */}
-          <Route path="/threads/:id" element={<ThreadPage />} />{" "}
+          <Route path="/threads/:id" element={<ThreadPage />} />
+          {' '}
           {/* ✅ detail thread */}
           <Route path="/leaderboards" element={<LeaderboardPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -45,18 +49,14 @@ export default function App() {
       <footer className="bg-white border-t fixed bottom-0 w-full flex justify-around py-3 text-sm">
         <NavLink
           to="/"
-          className={({ isActive }) =>
-            isActive ? "text-blue-600 font-medium" : "text-gray-700"
-          }
+          className={({ isActive }) => (isActive ? 'text-blue-600 font-medium' : 'text-gray-700')}
         >
           Threads
         </NavLink>
 
         <NavLink
           to="/leaderboards"
-          className={({ isActive }) =>
-            isActive ? "text-blue-600 font-medium" : "text-gray-700"
-          }
+          className={({ isActive }) => (isActive ? 'text-blue-600 font-medium' : 'text-gray-700')}
         >
           Leaderboards
         </NavLink>
@@ -65,14 +65,13 @@ export default function App() {
         {!token ? (
           <NavLink
             to="/login"
-            className={({ isActive }) =>
-              isActive ? "text-blue-600 font-medium" : "text-gray-700"
-            }
+            className={({ isActive }) => (isActive ? 'text-blue-600 font-medium' : 'text-gray-700')}
           >
             Login
           </NavLink>
         ) : (
           <button
+            type="button"
             onClick={handleLogout}
             className="text-red-600 font-medium hover:underline"
           >

@@ -1,17 +1,17 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 import {
   FaRegThumbsUp,
   FaRegThumbsDown,
   FaRegCommentDots,
   FaRegShareSquare,
-} from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   voteThread,
   optimisticVoteThread,
-} from "../features/threads/threadsSlice";
-import { postedAt } from "../utils";
+} from '../features/threads/threadsSlice';
+import { postedAt } from '../utils';
 
 export default function ThreadItem({ thread }) {
   const dispatch = useDispatch();
@@ -20,8 +20,8 @@ export default function ThreadItem({ thread }) {
 
   const {
     id,
-    title = "Untitled",
-    body = "",
+    title = 'Untitled',
+    body = '',
     category,
     createdAt,
     upVotesBy = [],
@@ -30,32 +30,26 @@ export default function ThreadItem({ thread }) {
     owner,
     user,
   } = thread;
-
-  const likeCount = upVotesBy.length;
-  const dislikeCount = downVotesBy.length;
-  const commentCount = totalComments || thread.comments?.length || 0;
-  const timeAgo = createdAt ? postedAt(createdAt) : "Waktu tidak diketahui";
-  const ownerName = owner?.name || user?.name || "unknown";
-  const ownerAvatar = owner?.avatar || user?.avatar || null;
-
   const userId = auth.user?.id;
+  const isUpVoted = upVotesBy.includes(userId);
+  const isDownVoted = downVotesBy.includes(userId);
 
   const handleVote = (type) => {
-    // ✅ 1. Langsung ubah tampilan (Optimistic Update)
     dispatch(optimisticVoteThread({ threadId: id, userId, type }));
-
-    // ✅ 2. Kirim request ke API
     dispatch(voteThread({ threadId: id, type }));
   };
 
-  const isUpVoted = upVotesBy.includes(userId);
-  const isDownVoted = downVotesBy.includes(userId);
+  const ownerName = owner?.name || user?.name || 'unknown';
+  const ownerAvatar = owner?.avatar || user?.avatar || null;
+  const commentCount = totalComments || thread.comments?.length || 0;
+  const timeAgo = createdAt ? postedAt(createdAt) : 'Waktu tidak diketahui';
 
   return (
     <div className="card mb-3 p-3 border rounded-lg shadow-sm">
       {category && (
         <div className="text-sm text-blue-600 font-medium mb-1">
-          #{category}
+          #
+          {category}
         </div>
       )}
 
@@ -66,40 +60,45 @@ export default function ThreadItem({ thread }) {
         {title}
       </Link>
 
-      <p
-        className="text-gray-700 text-sm mt-1"
-        dangerouslySetInnerHTML={{
-          __html: body.length > 180 ? body.slice(0, 180) + "..." : body,
-        }}
-      ></p>
+      <p className="text-gray-700 text-sm mt-1">
+        {body.length > 180 ? `${body.slice(0, 180)}...` : body}
+      </p>
 
       <div className="flex items-center justify-between mt-3 text-sm text-gray-600">
         <div className="flex gap-4 items-center">
-          {/* 👍 Upvote */}
           <button
-            onClick={() => handleVote(isUpVoted ? "neutral" : "up")}
+            type="button"
+            onClick={() => handleVote(isUpVoted ? 'neutral' : 'up')}
             className={`flex items-center gap-1 ${
-              isUpVoted ? "text-blue-600" : "text-gray-600"
+              isUpVoted ? 'text-blue-600' : 'text-gray-600'
             }`}
           >
-            <FaRegThumbsUp /> {likeCount}
+            <FaRegThumbsUp />
+            {' '}
+            {upVotesBy.length}
           </button>
 
-          {/* 👎 Downvote */}
           <button
-            onClick={() => handleVote(isDownVoted ? "neutral" : "down")}
+            type="button"
+            onClick={() => handleVote(isDownVoted ? 'neutral' : 'down')}
             className={`flex items-center gap-1 ${
-              isDownVoted ? "text-red-600" : "text-gray-600"
+              isDownVoted ? 'text-red-600' : 'text-gray-600'
             }`}
           >
-            <FaRegThumbsDown /> {dislikeCount}
+            <FaRegThumbsDown />
+            {' '}
+            {downVotesBy.length}
           </button>
 
           <span className="flex items-center gap-1">
-            <FaRegCommentDots /> {commentCount}
+            <FaRegCommentDots />
+            {' '}
+            {commentCount}
           </span>
           <span className="flex items-center gap-1">
-            <FaRegShareSquare /> 1
+            <FaRegShareSquare />
+            {' '}
+            1
           </span>
         </div>
 

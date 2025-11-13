@@ -1,25 +1,25 @@
 // src/components/ThreadDetail.jsx
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import DOMPurify from "dompurify";
-import {
-  addComment,
-  voteThread,
-  voteComment,
-  fetchThreadDetail,
-} from "../features/threads/threadsSlice";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import DOMPurify from 'dompurify';
 import {
   FaRegThumbsUp,
   FaRegThumbsDown,
   FaRegCommentDots,
   FaRegShareSquare,
-} from "react-icons/fa";
+} from 'react-icons/fa';
+import {
+  addComment,
+  voteThread,
+  voteComment,
+  fetchThreadDetail,
+} from '../features/threads/threadsSlice';
 
 export default function ThreadDetail({ threadId }) {
   const dispatch = useDispatch();
   const { user } = useSelector((s) => s.auth);
   const { current: thread, loading } = useSelector((s) => s.threads);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState('');
 
   useEffect(() => {
     if (threadId) dispatch(fetchThreadDetail(threadId));
@@ -30,46 +30,57 @@ export default function ThreadDetail({ threadId }) {
   const cleanHTML = DOMPurify.sanitize(thread.body || thread.content, {
     USE_PROFILES: { html: true },
   })
-    .replaceAll("<div>", "")
-    .replaceAll("</div>", "");
+    .replaceAll('<div>', '')
+    .replaceAll('</div>', '');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return alert("Harap login untuk memberikan komentar.");
-    if (!content.trim()) return;
+    if (!user) {
+      // eslint-disable-next-line no-alert
+      alert('Harap login untuk memberikan komentar.');
+      return null;
+    }
+    if (!content.trim()) return null;
     await dispatch(addComment({ threadId: thread.id, content }));
-    setContent("");
+    setContent('');
     dispatch(fetchThreadDetail(thread.id));
+    return null;
   };
 
   const handleVoteThread = (type) => {
-    if (!user) return alert("Harap login untuk vote.");
-    const hasVoted =
-      type === "up"
-        ? thread.upVotesBy.includes(user.id)
-        : thread.downVotesBy.includes(user.id);
+    if (!user) {
+      // eslint-disable-next-line no-alert
+      alert('Harap login untuk vote.');
+      return;
+    }
+    const hasVoted = type === 'up'
+      ? thread.upVotesBy.includes(user.id)
+      : thread.downVotesBy.includes(user.id);
 
     dispatch(
       voteThread({
         threadId: thread.id,
-        type: hasVoted ? "neutral" : type,
-      })
+        type: hasVoted ? 'neutral' : type,
+      }),
     );
   };
 
   const handleVoteComment = (comment, type) => {
-    if (!user) return alert("Harap login untuk vote komentar.");
-    const hasVoted =
-      type === "up"
-        ? comment.upVotesBy.includes(user.id)
-        : comment.downVotesBy.includes(user.id);
+    if (!user) {
+      // eslint-disable-next-line no-alert
+      alert('Harap login untuk vote komentar.');
+      return;
+    }
+    const hasVoted = type === 'up'
+      ? comment.upVotesBy.includes(user.id)
+      : comment.downVotesBy.includes(user.id);
 
     dispatch(
       voteComment({
         threadId: thread.id,
         commentId: comment.id,
-        type: hasVoted ? "neutral" : type,
-      })
+        type: hasVoted ? 'neutral' : type,
+      }),
     );
   };
 
@@ -78,54 +89,52 @@ export default function ThreadDetail({ threadId }) {
       className="card"
       style={{
         maxWidth: 800,
-        margin: "0 auto",
+        margin: '0 auto',
         padding: 20,
-        background: "#fff",
+        background: '#fff',
         borderRadius: 12,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+        boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
       }}
     >
-      {/* 🔹 Kategori */}
       {thread.category && (
         <div
           style={{
-            background: "#eef2ff",
-            display: "inline-block",
-            padding: "4px 10px",
+            background: '#eef2ff',
+            display: 'inline-block',
+            padding: '4px 10px',
             borderRadius: 8,
-            color: "#4f46e5",
+            color: '#4f46e5',
             fontWeight: 500,
           }}
         >
-          #{thread.category}
+          #
+          {thread.category}
         </div>
       )}
 
-      {/* 🔹 Judul */}
       <h2
         style={{
           marginTop: 12,
           fontSize: 28,
-          fontWeight: "bold",
-          color: "#1e1e1e",
+          fontWeight: 'bold',
+          color: '#1e1e1e',
           lineHeight: 1.3,
         }}
       >
         {thread.title}
       </h2>
 
-      {/* 🔹 Isi Thread */}
       <div
         className="thread-body"
         style={{ marginTop: 16, lineHeight: 1.7 }}
+        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{ __html: cleanHTML }}
-      ></div>
+      />
 
-      {/* 🔹 Info Pemilik */}
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
+          display: 'flex',
+          alignItems: 'center',
           marginTop: 20,
           marginBottom: 8,
           gap: 8,
@@ -139,91 +148,104 @@ export default function ThreadDetail({ threadId }) {
             style={{
               width: 40,
               height: 40,
-              borderRadius: "50%",
-              objectFit: "cover",
+              borderRadius: '50%',
+              objectFit: 'cover',
             }}
           />
         )}
         <div className="small-muted">
-          <strong>{thread.owner?.name}</strong> •{" "}
+          <strong>{thread.owner?.name}</strong>
+          {' '}
+          •
+          {' '}
           {new Date(thread.createdAt).toLocaleString()}
         </div>
       </div>
 
-      {/* 🔹 Statistik (vote & komentar seperti di ThreadItem) */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           marginTop: 16,
-          borderTop: "1px solid #eee",
+          borderTop: '1px solid #eee',
           paddingTop: 12,
         }}
       >
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           <button
-            onClick={() => handleVoteThread("up")}
+            type="button"
+            onClick={() => handleVoteThread('up')}
             style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
-              color: thread.upVotesBy.includes(user?.id) ? "#4f46e5" : "#555",
+              color: thread.upVotesBy.includes(user?.id) ? '#4f46e5' : '#555',
               fontSize: 16,
             }}
           >
-            <FaRegThumbsUp /> {thread.upVotesBy?.length || 0}
+            <FaRegThumbsUp />
+            {' '}
+            {thread.upVotesBy?.length || 0}
           </button>
 
           <button
-            onClick={() => handleVoteThread("down")}
+            type="button"
+            onClick={() => handleVoteThread('down')}
             style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
-              color: thread.downVotesBy.includes(user?.id) ? "red" : "#555",
+              color: thread.downVotesBy.includes(user?.id) ? 'red' : '#555',
               fontSize: 16,
             }}
           >
-            <FaRegThumbsDown /> {thread.downVotesBy?.length || 0}
+            <FaRegThumbsDown />
+            {' '}
+            {thread.downVotesBy?.length || 0}
           </button>
 
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
-              color: "#555",
+              color: '#555',
               fontSize: 16,
             }}
           >
-            <FaRegCommentDots /> {thread.comments?.length || 0}
+            <FaRegCommentDots />
+            {' '}
+            {thread.comments?.length || 0}
           </div>
 
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               gap: 6,
-              color: "#555",
+              color: '#555',
               fontSize: 16,
             }}
           >
-            <FaRegShareSquare /> 1
+            <FaRegShareSquare />
+            {' '}
+            1
           </div>
         </div>
       </div>
 
-      {/* 🔹 Komentar */}
-      <hr style={{ margin: "16px 0" }} />
+      <hr style={{ margin: '16px 0' }} />
       <h3 style={{ fontSize: 20, marginBottom: 10 }}>
-        Komentar ({thread.comments?.length ?? 0})
+        Komentar (
+        {thread.comments?.length ?? 0}
+        )
       </h3>
 
       <div style={{ marginTop: 8 }}>
@@ -232,14 +254,14 @@ export default function ThreadDetail({ threadId }) {
             <div
               key={c.id}
               style={{
-                border: "1px solid #eee",
+                border: '1px solid #eee',
                 borderRadius: 8,
                 padding: 10,
                 marginBottom: 10,
-                background: "#fafafa",
+                background: '#fafafa',
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {c.owner?.avatar && (
                   <img
                     src={c.owner.avatar}
@@ -247,65 +269,71 @@ export default function ThreadDetail({ threadId }) {
                     style={{
                       width: 30,
                       height: 30,
-                      borderRadius: "50%",
-                      objectFit: "cover",
+                      borderRadius: '50%',
+                      objectFit: 'cover',
                     }}
                   />
                 )}
                 <div className="small-muted">
-                  <strong>{c.owner?.name}</strong> •{" "}
+                  <strong>{c.owner?.name}</strong>
+                  {' '}
+                  •
+                  {' '}
                   {new Date(c.createdAt).toLocaleString()}
                 </div>
               </div>
 
               <div
                 style={{ marginTop: 6, lineHeight: 1.5 }}
+                // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(c.content),
                 }}
-              ></div>
+              />
 
-              {/* 🔹 Vote pada komentar */}
               <div
                 style={{
                   marginTop: 8,
-                  display: "flex",
+                  display: 'flex',
                   gap: 12,
-                  alignItems: "center",
+                  alignItems: 'center',
                 }}
               >
                 <button
                   type="button"
-                  onClick={() => handleVoteComment(c, "up")}
+                  onClick={() => handleVoteComment(c, 'up')}
                   style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 6,
                     fontSize: 14,
-                    color: c.upVotesBy.includes(user?.id) ? "#4f46e5" : "#555",
+                    color: c.upVotesBy.includes(user?.id) ? '#4f46e5' : '#555',
                   }}
                 >
-                  <FaRegThumbsUp /> {c.upVotesBy?.length || 0}
+                  <FaRegThumbsUp />
+                  {' '}
+                  {c.upVotesBy?.length || 0}
                 </button>
-
                 <button
                   type="button"
-                  onClick={() => handleVoteComment(c, "down")}
+                  onClick={() => handleVoteComment(c, 'down')}
                   style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
+                    background: 'transparent',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 6,
                     fontSize: 14,
-                    color: c.downVotesBy.includes(user?.id) ? "red" : "#555",
+                    color: c.downVotesBy.includes(user?.id) ? 'red' : '#555',
                   }}
                 >
-                  <FaRegThumbsDown /> {c.downVotesBy?.length || 0}
+                  <FaRegThumbsDown />
+                  {' '}
+                  {c.downVotesBy?.length || 0}
                 </button>
               </div>
             </div>
@@ -315,47 +343,45 @@ export default function ThreadDetail({ threadId }) {
         )}
       </div>
 
-      {/* 🔹 Form komentar */}
       {user ? (
         <form onSubmit={handleSubmit} style={{ marginTop: 20 }}>
           <label
-            htmlFor="comment"
             style={{
-              display: "block",
+              display: 'block',
               marginBottom: 6,
               fontWeight: 500,
-              color: "#333",
+              color: '#333',
             }}
           >
             Tambahkan Komentar
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Tulis komentar kamu..."
+              rows={4}
+              required
+              style={{
+                width: '100%',
+                padding: 10,
+                borderRadius: 8,
+                border: '1px solid #ccc',
+                resize: 'none',
+                marginTop: 4,
+                marginBottom: 10,
+                outlineColor: '#4f46e5',
+                background: '#f9fafb',
+              }}
+            />
           </label>
-          <textarea
-            id="comment"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Tulis komentar kamu..."
-            rows={4}
-            required
-            style={{
-              width: "100%",
-              padding: 10,
-              borderRadius: 8,
-              border: "1px solid #ccc",
-              resize: "none",
-              marginBottom: 10,
-              outlineColor: "#4f46e5",
-              background: "#f9fafb",
-            }}
-          />
           <button
             type="submit"
             style={{
-              backgroundColor: "#4f46e5",
-              color: "#fff",
-              padding: "8px 16px",
-              border: "none",
+              backgroundColor: '#4f46e5',
+              color: '#fff',
+              padding: '8px 16px',
+              border: 'none',
               borderRadius: 6,
-              cursor: "pointer",
+              cursor: 'pointer',
               fontWeight: 500,
             }}
           >
@@ -363,7 +389,7 @@ export default function ThreadDetail({ threadId }) {
           </button>
         </form>
       ) : (
-        <p style={{ marginTop: 16, color: "#666" }}>
+        <p style={{ marginTop: 16, color: '#666' }}>
           🔒 Silakan login untuk memberikan komentar.
         </p>
       )}

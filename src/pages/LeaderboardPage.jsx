@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchLeaderboard } from "../features/threads/threadsSlice";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLeaderboard } from '../features/threads/threadsSlice';
 
 export default function LeaderboardPage() {
   const dispatch = useDispatch();
@@ -20,22 +20,22 @@ export default function LeaderboardPage() {
         {leaderboard && leaderboard.length > 0 ? (
           leaderboard.map((item, idx) => {
             const { user, score } = item;
-            const name = user?.name || "Unknown User";
+            const name = user?.name || 'Unknown User';
             const avatar = user?.avatar || null;
 
             return (
               <div
                 key={user?.id || idx}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  padding: "10px 0",
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '10px 0',
                   borderBottom:
-                    idx < leaderboard.length - 1 ? "1px solid #e5e7eb" : "none",
+                    idx < leaderboard.length - 1 ? '1px solid #e5e7eb' : 'none',
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {avatar ? (
                     <img
                       src={avatar}
@@ -43,8 +43,8 @@ export default function LeaderboardPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        borderRadius: "50%",
-                        objectFit: "cover",
+                        borderRadius: '50%',
+                        objectFit: 'cover',
                       }}
                     />
                   ) : (
@@ -52,10 +52,10 @@ export default function LeaderboardPage() {
                       style={{
                         width: 40,
                         height: 40,
-                        borderRadius: "50%",
-                        background: "#e5e7eb",
+                        borderRadius: '50%',
+                        background: '#e5e7eb',
                       }}
-                    ></div>
+                    />
                   )}
                   <div>
                     <strong>{name}</strong>
@@ -66,9 +66,9 @@ export default function LeaderboardPage() {
                 <div
                   style={{
                     fontWeight: 700,
-                    color: "#2563eb",
+                    color: '#2563eb',
                     minWidth: 40,
-                    textAlign: "right",
+                    textAlign: 'right',
                   }}
                 >
                   {score}

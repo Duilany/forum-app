@@ -1,5 +1,5 @@
-import React from "react";
-import ThreadItem from "./ThreadItem";
+import React from 'react';
+import ThreadItem from './ThreadItem';
 
 export default function ThreadList({ threads }) {
   if (!threads || threads.length === 0) {

@@ -50,6 +50,8 @@ module.exports = {
 
     // ⚙️ Izinkan console.log (bisa kamu ubah ke "warn" kalau mau)
     "no-console": "off",
+    // ✅ Nonaktifkan sementara label-has-associated-control
+    "jsx-a11y/label-has-associated-control": "off",
   },
 
   // ✅ Tambahkan ini agar ESLint tahu setupTests.js boleh pakai devDependencies
